@@ -34,74 +34,26 @@ function RenderCampsite({ campsite }) {
   );
 }
 
-function RenderComments({ comments, addComment, campsiteId }) {
+function RenderComments({ comments, postComment, campsiteId }) {
   if (comments) {
     return (
       <div className="col-md-5 m-1">
         <h4>Comments</h4>
-        {comments.map((comment) => (
-          <div>
-            <p>
-              {comment.text} <br></br> -- {comment.author},{" "}
-              {new Intl.DateTimeFormat("en-US", {
-                year: "numeric",
-                month: "short",
-                day: "2-digit",
-              }).format(new Date(Date.parse(comment.date)))}{" "}
-            </p>
-          </div>
-        ))}
-        <CommentForm campsiteId={campsiteId} addComment={addComment} />
-      </div>
-    );
-  }
-  return <div />;
-}
-
-function CampsiteInfo(props) {
-  if (props.isLoading) {
-    return (
-      <div className="container">
-        <div className="row">
-          <Loading />
-        </div>
-      </div>
-    );
-  }
-  if (props.errMess) {
-    return (
-      <div className="container">
-        <div className="row">
-          <div className="col">
-            <h4>{props.errMess}</h4>
-          </div>
-        </div>
-      </div>
-    );
-  }
-  if (props.campsite) {
-    return (
-      <div className="container">
-        <div className="row">
-          <div className="col">
-            <Breadcrumb>
-              <BreadcrumbItem>
-                <Link to="/directory">Directory</Link>
-              </BreadcrumbItem>
-              <BreadcrumbItem active>{props.campsite.name}</BreadcrumbItem>
-            </Breadcrumb>
-            <h2>{props.campsite.name}</h2>
-            <hr />
-          </div>
-        </div>
-        <div className="row">
-          <RenderCampsite campsite={props.campsite} />
-          <RenderComments
-            comments={props.comments}
-            addComment={props.addComment}
-            campsiteId={props.campsite.id}
-          />
-        </div>
+        {comments.map((comment) => {
+          return (
+            <div key={comment.id}>
+              <p>
+                {comment.text} <br /> -- {comment.author},
+                {new Intl.DateTimeFormat("en-US", {
+                  year: "numeric",
+                  month: "short",
+                  day: "2-digit",
+                }).format(new Date(Date.parse(comment.date)))}
+              </p>
+            </div>
+          );
+        })}
+        <CommentForm campsiteId={campsiteId} postComment={postComment} />
       </div>
     );
   }
@@ -127,9 +79,8 @@ class CommentForm extends Component {
   }
 
   handleSubmit(values) {
-    alert("Current state is: " + JSON.stringify(values));
     this.toggleModal();
-    this.props.addComment(
+    this.props.postComment(
       this.props.campsiteId,
       values.rating,
       values.author,
@@ -205,13 +156,13 @@ class CommentForm extends Component {
                 />
               </div>
               <div className="form-group">
-                <Label htmlFor="comment" md={2}>
+                <Label htmlFor="text" md={2}>
                   Comment
                 </Label>
                 <Control.textarea
-                  model=".comment"
-                  id="comment"
-                  name="comment"
+                  model=".text"
+                  id="text"
+                  name="text"
                   className="form-control"
                   rows="6"
                 />
@@ -227,6 +178,56 @@ class CommentForm extends Component {
       </React.Fragment>
     );
   }
+}
+
+function CampsiteInfo(props) {
+  if (props.isLoading) {
+    return (
+      <div className="container">
+        <div className="row">
+          <Loading />
+        </div>
+      </div>
+    );
+  }
+  if (props.errMess) {
+    return (
+      <div className="container">
+        <div className="row">
+          <div className="col">
+            <h4>{props.errMess}</h4>
+          </div>
+        </div>
+      </div>
+    );
+  }
+  if (props.campsite) {
+    return (
+      <div className="container">
+        <div className="row">
+          <div className="col">
+            <Breadcrumb>
+              <BreadcrumbItem>
+                <Link to="/directory">Directory</Link>
+              </BreadcrumbItem>
+              <BreadcrumbItem active>{props.campsite.name}</BreadcrumbItem>
+            </Breadcrumb>
+            <h2>{props.campsite.name}</h2>
+            <hr />
+          </div>
+        </div>
+        <div className="row">
+          <RenderCampsite campsite={props.campsite} />
+          <RenderComments
+            comments={props.comments}
+            postComment={props.postComment}
+            campsiteId={props.campsite.id}
+          />
+        </div>
+      </div>
+    );
+  }
+  return <div />;
 }
 
 export default CampsiteInfo;
