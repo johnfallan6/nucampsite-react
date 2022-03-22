@@ -43,8 +43,7 @@ function RenderComments({ comments, postComment, campsiteId }) {
           return (
             <div key={comment.id}>
               <p>
-                {comment.text} <br /> -- {comment.author},
-                {new Intl.DateTimeFormat("en-US", {
+                {comment.text} <br /> -- {comment.author}, {new Intl.DateTimeFormat("en-US", {
                   year: "numeric",
                   month: "short",
                   day: "2-digit",
